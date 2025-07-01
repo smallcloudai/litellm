@@ -99,7 +99,7 @@ async def make_call(
         raise AnthropicError(status_code=500, message=str(e))
 
     completion_stream = ModelResponseIterator(
-        streaming_response=response.aiter_lines(),
+        response=response,
         sync_stream=False,
         json_mode=json_mode,
     )
@@ -485,9 +485,10 @@ class AnthropicChatCompletion(BaseLLM):
 
 class ModelResponseIterator:
     def __init__(
-        self, streaming_response, sync_stream: bool, json_mode: Optional[bool] = False
+        self, response, sync_stream: bool, json_mode: Optional[bool] = False
     ):
-        self.streaming_response = streaming_response
+        self.response = response
+        self.streaming_response = response.aiter_lines()
         self.response_iterator = self.streaming_response
         self.content_blocks: List[ContentBlockDelta] = []
         self.tool_index = -1

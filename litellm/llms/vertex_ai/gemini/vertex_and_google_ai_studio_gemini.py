@@ -2019,7 +2019,7 @@ async def make_call(
         )
 
     completion_stream = ModelResponseIterator(
-        streaming_response=response.aiter_lines(),
+        response=response,
         sync_stream=False,
         logging_obj=logging_obj,
     )
@@ -2504,13 +2504,14 @@ class VertexLLM(VertexBase):
 
 class ModelResponseIterator:
     def __init__(
-        self, streaming_response, sync_stream: bool, logging_obj: LoggingClass
+        self, response, sync_stream: bool, logging_obj: LoggingClass
     ):
         from litellm.litellm_core_utils.prompt_templates.common_utils import (
             check_is_function_call,
         )
 
-        self.streaming_response = streaming_response
+        self.response = response
+        self.streaming_response = response.aiter_lines()
         self.chunk_type: Literal["valid_json", "accumulated_json"] = "valid_json"
         self.accumulated_json = ""
         self.sent_first_chunk = False

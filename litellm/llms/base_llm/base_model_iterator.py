@@ -59,9 +59,10 @@ def convert_model_response_to_streaming(
 
 class BaseModelResponseIterator:
     def __init__(
-        self, streaming_response, sync_stream: bool, json_mode: Optional[bool] = False
+        self, response, sync_stream: bool, json_mode: Optional[bool] = False
     ):
-        self.streaming_response = streaming_response
+        self.response = response
+        self.streaming_response = response.aiter_lines()
         self.response_iterator = self.streaming_response
         self.json_mode = json_mode
 

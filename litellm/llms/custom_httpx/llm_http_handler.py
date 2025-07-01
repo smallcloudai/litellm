@@ -741,7 +741,7 @@ class BaseLLMHTTPHandler:
             )
         else:
             completion_stream = provider_config.get_model_response_iterator(
-                streaming_response=response.aiter_lines(), sync_stream=False
+                response=response, sync_stream=False
             )
         # LOGGING
         logging_obj.post_call(
