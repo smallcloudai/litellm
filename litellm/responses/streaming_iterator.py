@@ -182,6 +182,9 @@ class ResponsesAPIStreamingIterator(BaseResponsesAPIStreamingIterator):
     def __aiter__(self):
         return self
 
+    def aiter_lines(self):
+        return self.stream_iterator
+
     async def __anext__(self) -> ResponsesAPIStreamingResponse:
         try:
             while True:
