@@ -844,6 +844,19 @@ class OpenAiResponsesToChatCompletionStreamIterator(BaseModelResponseIterator):
                     finish_reason="",
                     usage=None,
                 )
+            elif output_item.get("type") == "web_search_call":
+                return GenericStreamingChunk(
+                    text="",
+                    tool_use=None,
+                    is_finished=False,
+                    finish_reason="",
+                    usage=None,
+                    provider_specific_fields={
+                        "web_search": output_item
+                    }
+                )
+            elif output_item.get("type") in ["message", "reasoning"]:
+                pass
         elif event_type == "response.function_call_arguments.delta":
             content_part: Optional[str] = parsed_chunk.get("delta", None)
             if content_part:
@@ -912,6 +925,17 @@ class OpenAiResponsesToChatCompletionStreamIterator(BaseModelResponseIterator):
             elif output_item.get("type") == "message":
                 return GenericStreamingChunk(
                     finish_reason="stop", is_finished=True, usage=None, text=""
+                )
+            elif output_item.get("type") == "web_search_call":
+                return GenericStreamingChunk(
+                    text="",
+                    tool_use=None,
+                    is_finished=False,
+                    finish_reason="",
+                    usage=None,
+                    provider_specific_fields={
+                        "web_search": output_item
+                    }
                 )
 
         elif event_type == "response.output_text.delta":
